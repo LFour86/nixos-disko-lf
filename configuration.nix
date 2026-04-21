@@ -112,7 +112,6 @@
   # BTRFS ephemeral root
   boot.initrd.systemd.enable = true;
   boot.initrd.systemd.services.rollback = {
-  boot.initrd.systemd.services.rollback = {
     description = "Rollback BTRFS root subvolume to a pristine state";
     wantedBy = [ "initrd.target" ];
     after = [ "systemd-cryptsetup@enc.service" ];
