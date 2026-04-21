@@ -25,7 +25,7 @@
                 type = "luks";
                 name = "enc-swap";
                 extraFormatArgs = [ "--cipher" "aes-xts-plain64" "--key-size" "512" ];
-                #crypttabExtraOpts = [ "tpm2-device=auto" ];
+                crypttabExtraOpts = [ "tpm2-device=auto" ];
                 content = {
                   type = "swap";
                 };
@@ -37,7 +37,7 @@
                 type = "luks";
                 name = "enc";
                 extraFormatArgs = [ "--cipher" "aes-xts-plain64" "--key-size" "512" ];
-                #crypttabExtraOpts = [ "tpm2-device=auto" ];
+                crypttabExtraOpts = [ "tpm2-device=auto" ];
                 content = {
                   type = "btrfs";
                   extraArgs = [ "-f" "-L" "nixos" ];
