@@ -53,7 +53,6 @@
                     "/persist" = {
                       mountpoint = "/persist";
                       mountOptions = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ];
-                      neededForBoot = true;
                     };
                     "/nix" = {
                       mountpoint = "/nix";
