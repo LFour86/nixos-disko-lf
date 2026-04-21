@@ -34,7 +34,7 @@ sudo git clone https://github.com/LFour86/nixos-disko-lf.git
 **注意：** 请根据自己的需求来修改 `disko.nix`。
 
 ```bash
-sudo nix -option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /etc/nixos/nixos-disko-lf/disko.nix
+sudo nix --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /etc/nixos/nixos-disko-lf/disko.nix
 ```
 
 执行完成后，所有分区、加密容器和子卷已自动挂载到 `/mnt`。
@@ -55,7 +55,7 @@ sudo cp -r /etc/nixos/nixos-disko-lf/configuration.nix /mnt/etc/nixos/  # 注意
 ### 4. 完成安装
 
 ```bash
-sudo nixos-install -option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" --root /mnt
+sudo nixos-install --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" --root /mnt
 sudo reboot
 ```
 
