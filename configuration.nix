@@ -107,10 +107,6 @@
     "dm_mod.dm_mq_queue_depth=2048"
   ];
 
-  #boot.initrd.secrets = {
-    #"/persist/etc/luks-swap.key" = "/persist/etc/luks-swap.key";
-  #};
-
   # BTRFS ephemeral root
   boot.initrd.systemd.enable = true;
   boot.initrd.systemd.services.rollback = {
