@@ -17,12 +17,8 @@ This project features:
 ### 1. Prepare the Environment (run as root in NixOS Live ISO)
 
 ```bash
-# (Optional) configure and update the channel
-nix-channel --add https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixpkgs-unstable nixpkgs
-nix-channel --update
-
 # Install required tools
-nix-env -iA nixos.disko nixos.git nixos.neovim
+nix-env -iA nixos.git nixos.neovim
 
 # Verify disk
 lsblk -f
@@ -31,9 +27,8 @@ lsblk -f
 ### 2. Use the Declarative Disko Configuration
 
 ```bash
-sudo mkdir -p /mnt/persist/etc/nixos
+cd /etc/nixos
 sudo git clone https://github.com/LFour86/nixos-disko-lf.git
-sudo cp nixos-disko-lf/disko.nix ./
 ```
 
 After saving, run the following command to let Disko **automatically partition, set up LUKS2 encryption, create BTRFS subvolumes, and mount everything** (you will be prompted twice for the LUKS passphrase):
@@ -41,7 +36,7 @@ After saving, run the following command to let Disko **automatically partition, 
 **Note:** Adjust `disko.nix` to suit your needs.
 
 ```bash
-sudo nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /mnt/persist/etc/nixos/disko.nix
+sudo nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /etc/nixos/nixos-disko-lf/disko.nix
 ```
 
 After execution, all partitions, encrypted containers, and subvolumes are mounted under `/mnt`.
@@ -52,7 +47,7 @@ After execution, all partitions, encrypted containers, and subvolumes are mounte
 sudo nixos-generate-config --root /mnt
 
 # Overwrite the auto‑generated configuration.nix
-sudo cp -r /mnt/persist/etc/nixos/nixos-disko-lf/configuration.nix /mnt/etc/nixos/  # Customize configuration.nix as needed
+sudo cp -r /etc/nixos/nixos-disko-lf/configuration.nix /mnt/etc/nixos/  # Customize configuration.nix as needed
 ```
 
 **Note:** Do **not** `imports` the auto‑generated `hardware-configuration.nix`; it conflicts with `disko.nix`.
@@ -71,6 +66,6 @@ After reboot, enter the LUKS passphrase **once** (for root); swap will be unlock
 ### 5. Post-Installation Maintenance
 - The system is fully declarative. To change disk configuration later, edit `/persist/etc/nixos/disko.nix` and run:
   ```bash
-  nix run github:nix-community/disko -- --mode disko /persist/etc/nixos/disko.nix
+  disko -- --mode disko /persist/etc/nixos/disko.nix
   ```
 Then update the system with `nixos-rebuild`.
