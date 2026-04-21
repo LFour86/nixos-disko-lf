@@ -112,24 +112,33 @@
   # BTRFS ephemeral root
   boot.initrd.systemd.enable = true;
   boot.initrd.systemd.services.rollback = {
-    description = "Rollback BTRFS root subvolume to a pristine state";
-    wantedBy = [ "initrd.target" ];
-    after = [ "systemd-cryptsetup@enc.service" ];
-    before = [ "sysroot.mount" ];
-    unitConfig.DefaultDependencies = "no";
-    serviceConfig.Type = "oneshot";
-    script = ''
-      mkdir -p /btrfs_tmp
-      mount /dev/mapper/enc /btrfs_tmp
+      description = "Rollback BTRFS root subvolume to a pristine state";
+      wantedBy = [ "initrd.target" ];
+      after = [
+        "systemd-cryptsetup@enc.service"
+        "local-fs-pre.target"
+        "sysroot.mount"
+      ];
+      before = [ "sysroot.mount" ];
+      unitConfig.DefaultDependencies = "no";
+      serviceConfig.Type = "oneshot";
+      script = ''
+        mkdir -p /btrfs_tmp
+        mount -o subvolid=5 /dev/mapper/enc /btrfs_tmp
 
-      if [[ -e /btrfs_tmp/root ]]; then
-        btrfs subvolume delete /btrfs_tmp/root
-      fi
+        if [[ -d /btrfs_tmp/root ]]; then
+          echo "Deleting old root subvolume..."
+          btrfs subvolume delete -r /btrfs_tmp/root 2>/dev/null || true
+          btrfs subvolume delete /btrfs_tmp/root 2>/dev/null || true
+        fi
 
-      btrfs subvolume create /btrfs_tmp/root
-      umount /btrfs_tmp
-    '';
-  };
+        echo "Creating new pristine root subvolume..."
+        btrfs subvolume create /btrfs_tmp/root
+
+        umount /btrfs_tmp
+        rmdir /btrfs_tmp
+      '';
+    };
 
   environment.systemPackages = with pkgs; [
     disko
