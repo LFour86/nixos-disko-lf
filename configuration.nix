@@ -77,13 +77,13 @@
   };
 
   # File system
-  #fileSystems."/" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
-  #ileSystems."/home" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
-  #fileSystems."/persist" = {
-    #options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ];
-    #neededForBoot = true;
-    #};
-  #fileSystems."/nix" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
+  fileSystems."/" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
+  fileSystems."/home" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
+  fileSystems."/persist" = {
+    options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ];
+    neededForBoot = true;
+    };
+  fileSystems."/nix" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
 
   # swap
   swapDevices = [ { device = "/dev/mapper/enc-swap"; } ];
