@@ -78,6 +78,20 @@
     pulse.enable = true;
   };
 
+  # Luks2
+  boot.initrd.luks.devices = {
+    "enc" = lib.mkDefault {
+      device = "/dev/disk/by-label/luks-nixos";
+      preLVM = true;
+      allowDiscards = true;
+    };
+    "enc-swap" = lib.mkDefault {
+      device = "/dev/disk/by-label/luks-swap";
+      preLVM = true;
+      allowDiscards = true;
+    };
+  };
+
   # File system
   fileSystems."/" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
   fileSystems."/home" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
