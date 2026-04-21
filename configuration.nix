@@ -14,6 +14,8 @@
 
   boot.kernelPackages = pkgs.linuxPackages;
 
+  nixpkgs.config.allowUnfree = true;
+
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
 
