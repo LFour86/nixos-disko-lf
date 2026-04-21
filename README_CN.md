@@ -15,12 +15,8 @@
 ### 1. 准备环境（在 NixOS Live ISO 终端中以 root 执行）
 
 ```bash
-# （可选）配置并更新更新 channel
-nix-channel --add https://mirrors.tuna.tsinghua.edu.cn/nix-channels/nixpkgs-unstable nixpkgs
-nix-channel --update
-
 # 安装必要工具
-nix-env -iA nixos.disko nixos.git nixos.neovim
+nix-env --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" -iA nixos.git nixos.neovim
 
 # 确认磁盘
 lsblk -f
@@ -29,17 +25,16 @@ lsblk -f
 ### 2. 使用 Disko 声明式配置文件
 
 ```bash
-sudo mkdir -p /mnt/persist/etc/nixos
+cd /etc/nixos
 sudo git clone https://github.com/LFour86/nixos-disko-lf.git
-sudo cp nixos-disko-lf/disko.nix ./
 ```
 
-保存后，执行以下命令让 Disko **自动完成分区、LUKS2 加密、BTRFS 创建及挂载**（整个过程会提示输入两次 LUKS 密码）：
+然后，执行以下命令让 Disko **自动完成分区、LUKS2 加密、BTRFS 创建及挂载**（整个过程会提示输入两次 LUKS 密码）：
 
 **注意：** 请根据自己的需求来修改 `disko.nix`。
 
 ```bash
-sudo nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /mnt/persist/etc/nixos/disko.nix
+sudo nix -option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /etc/nixos/nixos-disko-lf/disko.nix
 ```
 
 执行完成后，所有分区、加密容器和子卷已自动挂载到 `/mnt`。
@@ -50,7 +45,7 @@ sudo nix --extra-experimental-features "nix-command flakes" run github:nix-commu
 sudo nixos-generate-config --root /mnt
 
 # 覆盖自动生成的 configuration.nix
-sudo cp -r /mnt/persist/etc/nixos/nixos-disko-lf/configuration.nix /mnt/etc/nixos/  # 注意个性化修改configuration.nix
+sudo cp -r /etc/nixos/nixos-disko-lf/configuration.nix /mnt/etc/nixos/  # 注意个性化修改configuration.nix
 ```
 
 **注意：** 不要 `imports` 自动生成的 `hardware-configuration.nix`，其与 `disko.nix` 冲突。
@@ -60,7 +55,7 @@ sudo cp -r /mnt/persist/etc/nixos/nixos-disko-lf/configuration.nix /mnt/etc/nixo
 ### 4. 完成安装
 
 ```bash
-sudo nixos-install --root /mnt
+sudo nixos-install -option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" --root /mnt
 sudo reboot
 ```
 
@@ -69,6 +64,6 @@ sudo reboot
 ### 5. 安装成功后的维护
 - 系统已完全声明式，后续磁盘变更可直接修改 `/persist/etc/nixos/disko.nix` 并运行：
   ```bash
-  nix run github:nix-community/disko -- --mode disko /persist/etc/nixos/disko.nix
+  disko -- --mode disko /persist/etc/nixos/disko.nix
   ```
 然后使用 `nixos-rebuild` 命令更新系统。
