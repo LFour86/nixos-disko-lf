@@ -38,8 +38,8 @@
         hashedPasswordFile = "/persist/passwords/root";
       };
       lfour = {
-        isNormalUser = true;
         uid = 1000;
+        isNormalUser = true;
         hashedPasswordFile = "/persist/passwords/lfour";
         description = "LFour";
         extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
