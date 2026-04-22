@@ -135,12 +135,12 @@
 
   # BTRFS ephemeral root
   boot.initrd.systemd.enable = true;
-  boot.initrd.systemd.extraBin.btrfs = "${pkgs.btrfs-progs}/bin/btrfs"; # Ensure btrfs tool is available in initrd
   
+  boot.initrd.systemd.extraBin.btrfs = "${pkgs.btrfs-progs}/bin/btrfs"; # Ensure btrfs tool is available in initrd  
   boot.initrd.systemd.services.rollback = {
     description = "Rollback BTRFS root subvolume to a pristine state";
     wantedBy = [ "initrd.target" ];
-    after = [ "systemd-cryptsetup@enc.service" ]; # Run after LUKS partition is decrypted
+    after = [ "systemd-cryptsetup@enc.service" ];
     before = [ "sysroot.mount" ];
     unitConfig.DefaultDependencies = "no";
     serviceConfig.Type = "oneshot";
@@ -151,37 +151,27 @@
       mkdir -p /btrfs_tmp
       mount -o subvolid=5 /dev/mapper/enc /btrfs_tmp
 
-      if mountpoint -q /sysroot; then
+      # Ensure /sysroot is not mounted before we delete the subvolume
+      if mountpoint -q /sysroot 2>/dev/null; then
+        echo "Warning: /sysroot is already mounted, unmounting it to avoid conflicts..."
         umount /sysroot || true
       fi
 
       if [[ -d /btrfs_tmp/root ]]; then
-        echo "Rollback: Cleaning existing root subvolume and its descendants..."
-        findmnt --submounts --output TARGET --noheadings --raw /btrfs_tmp/root 2>/dev/null | sort -r | while read -r mnt; do
-          echo "Unmounting $mnt"
-          umount "$mnt" || true
-        done
-
-        if ! btrfs subvolume delete /btrfs_tmp/root 2>/dev/null; then
-          echo "Direct deletion failed, trying recursive delete..."
-          btrfs subvolume list -o /btrfs_tmp/root 2>/dev/null | awk '{print $NF}' | sort -r | while read -r subvol; do
-            echo "Deleting subvolume: $subvol"
-            btrfs subvolume delete "/btrfs_tmp/$subvol" || true
-          done
-          btrfs subvolume delete /btrfs_tmp/root
-        fi
+        echo "Removing existing root subvolume and all descendants recursively..."
+        btrfs subvolume delete -R /btrfs_tmp/root
       fi
 
-      echo "Rollback: Creating new pristine root subvolume..."
+      echo "Creating new pristine root subvolume..."
       btrfs subvolume create /btrfs_tmp/root
 
       umount /btrfs_tmp
       rmdir /btrfs_tmp
-    '';
-  };
-
+  '';
+};
 
   environment.systemPackages = with pkgs; [
+    btrfs.progs 
     disko
     git
     neovim
