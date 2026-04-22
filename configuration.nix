@@ -145,35 +145,36 @@
     unitConfig.DefaultDependencies = "no";
     serviceConfig.Type = "oneshot";
     script = ''
+      export PATH=/bin:/sbin:/usr/bin:/usr/sbin:$PATH
       set -euo pipefail
 
-      # Create a temporary mount point
       mkdir -p /btrfs_tmp
-      
-      # Mount the BTRFS root (subvolid=5) to access all subvolumes
       mount -o subvolid=5 /dev/mapper/enc /btrfs_tmp
 
-      # Check if the root subvolume exists
-      if [[ -d /btrfs_tmp/root ]]; then
-        echo "Cleaning up existing root subvolume and its children..."
-        
-        # List all subvolumes under /root, extract paths, sort in reverse order (deepest first)
-        # and delete them one by one to avoid "directory not empty" errors
-        btrfs subvolume list -o /btrfs_tmp/root | awk '{print $NF}' | sort -r | while read -r subvolume; do
-          echo "Deleting nested subvolume: $subvolume"
-          btrfs subvolume delete "/btrfs_tmp/$subvolume"
-        done
-        
-        # Finally delete the root subvolume itself
-        echo "Deleting /root subvolume..."
-        btrfs subvolume delete /btrfs_tmp/root
+      if mountpoint -q /sysroot; then
+        umount /sysroot || true
       fi
 
-      # Create a new, empty root subvolume for a fresh boot
-      echo "Creating new pristine root subvolume..."
+      if [[ -d /btrfs_tmp/root ]]; then
+        echo "Rollback: Cleaning existing root subvolume and its descendants..."
+        findmnt --submounts --output TARGET --noheadings --raw /btrfs_tmp/root 2>/dev/null | sort -r | while read -r mnt; do
+          echo "Unmounting $mnt"
+          umount "$mnt" || true
+        done
+
+        if ! btrfs subvolume delete /btrfs_tmp/root 2>/dev/null; then
+          echo "Direct deletion failed, trying recursive delete..."
+          btrfs subvolume list -o /btrfs_tmp/root 2>/dev/null | awk '{print $NF}' | sort -r | while read -r subvol; do
+            echo "Deleting subvolume: $subvol"
+            btrfs subvolume delete "/btrfs_tmp/$subvol" || true
+          done
+          btrfs subvolume delete /btrfs_tmp/root
+        fi
+      fi
+
+      echo "Rollback: Creating new pristine root subvolume..."
       btrfs subvolume create /btrfs_tmp/root
 
-      # Clean up: unmount and remove the temporary directory
       umount /btrfs_tmp
       rmdir /btrfs_tmp
     '';
