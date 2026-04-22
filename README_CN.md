@@ -16,7 +16,7 @@
 
 ```bash
 # 安装必要工具
-nix-env --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" -iA nixos.git nixos.neovim
+nix-env --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" -iA nixos.git nixos.neovim nixos.mkpasswd
 
 # 确认磁盘
 lsblk -f
@@ -49,6 +49,40 @@ sudo cp -r /etc/nixos/nixos-disko-lf/configuration.nix /mnt/etc/nixos/  # 注意
 ```
 
 **注意：** 不要 `imports` 自动生成的 `hardware-configuration.nix`，其与 `disko.nix` 冲突。
+
+**预设用户密码（安全声明式方案）**
+
+由于系统开启了根目录回滚，为了防止重启后账户密码丢失，我们需要在安装前将密码哈希持久化到 /persist 目录。
+
+```bash
+# 创建存放密码的持久化目录
+sudo mkdir -p /mnt/persist/passwords
+
+# 生成你的用户密码哈希（替换 lfour 为你的用户名）
+# 输入命令后会提示你输入并确认密码
+mkpasswd -m sha-512 | sudo tee /mnt/persist/passwords/lfour
+
+# 生成 root 用户密码哈希
+mkpasswd -m sha-512 | sudo tee /mnt/persist/passwords/root
+
+# 设置严格权限，确保安全
+sudo chmod 700 /mnt/persist/passwords
+sudo chmod 600 /mnt/persist/passwords/*
+```
+
+或者，使用 `Nix` 的方式来持久化密码：
+
+```
+user.user.root.initialPassword = "your_password";  # 这里写明文密码
+users.users.lfour = {
+    isNormalUser = true;
+    description = "LFour";
+    extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
+    initialPassword = "your_password"; # 这里写明文密码
+  };
+```
+
+**注意：** 这种方式属于明文显示密码，分享配置时应注意有安全风险。
 
 保存文件。
 
