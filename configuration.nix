@@ -35,12 +35,11 @@
     mutableUsers = false;
     users = {
       root = {
-        #initialPassword = "your_password";
         hashedPasswordFile = "/persist/passwords/root";
       };
       lfour = {
         isNormalUser = true;
-        #initialPassword = "your_password";
+        uid = 1000;
         hashedPasswordFile = "/persist/passwords/lfour";
         description = "LFour";
         extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
@@ -90,14 +89,14 @@
   };
 
   # File system
-  fileSystems."/" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
-  fileSystems."/home" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
+  fileSystems."/" = { options = [ "subvol=root" "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
+  fileSystems."/home" = { options = [ "subvol=home" "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
   fileSystems."/persist" = {
-    options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ];
+    options = [ "subvol=persist" "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ];
     neededForBoot = true;
   };
-  fileSystems."/var/lib/flatpak" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
-  fileSystems."/nix" = { options = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
+  fileSystems."/var/lib/flatpak" = { options = [ "subvol=flatpak" "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
+  fileSystems."/nix" = { options = [ "subvol=nix" "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
 
   # swap
   swapDevices = [ { device = "/dev/mapper/enc-swap"; } ];
@@ -114,6 +113,9 @@
       "/var/lib/systemd/random-seed"
       "/var/lib/libvirt"
       "/var/lib/docker"
+      #"var/lib/NetworkManager"
+      #"var/lib/lastlog"
+      #"/var/lib/systemd/linger"
 
       "/etc/NetworkManager/system-connections"
 
