@@ -110,7 +110,7 @@
       "/etc/NetworkManager/system-connections"
 
       # If use SSH
-      "/etc/ssh"
+      #"/etc/ssh"
 
       "/var/log"
       "/var/lib/nixos"
