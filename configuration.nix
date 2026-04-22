@@ -171,7 +171,7 @@
 };
 
   environment.systemPackages = with pkgs; [
-    btrfs.progs 
+    btrfs-progs 
     disko
     git
     neovim
