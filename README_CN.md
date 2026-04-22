@@ -70,20 +70,6 @@ sudo chmod 700 /mnt/persist/passwords
 sudo chmod 600 /mnt/persist/passwords/*
 ```
 
-或者，使用 `Nix` 的方式来持久化密码：
-
-```
-user.user.root.initialPassword = "your_password";  # 这里写明文密码
-users.users.lfour = {
-    isNormalUser = true;
-    description = "LFour";
-    extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
-    initialPassword = "your_password"; # 这里写明文密码
-  };
-```
-
-**注意：** 这种方式属于明文显示密码，分享配置时应注意有安全风险。
-
 保存文件。
 
 ### 4. 完成安装
