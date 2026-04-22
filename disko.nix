@@ -58,6 +58,10 @@
                       mountpoint = "/persist";
                       mountOptions = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ];
                     };
+                    "/flatpak" = {
+                      mountpoint = "/var/lib/flatpak";
+                      mountOptions = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ];
+                    };
                     "/nix" = {
                       mountpoint = "/nix";
                       mountOptions = [ "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ];
