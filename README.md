@@ -86,6 +86,10 @@ After rebooting, you only need to enter the LUKS password **once** (for the main
 
 After the system installation is complete, run the following in the terminal:
 
+> **Note:**
+>
+> Use 0+1 if secure boot is disabled, and 0+7 if secure boot is enabled.
+
 ```bash
 # Bind the root partition (LUKS container enc)
 sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+1 /dev/disk/by-partlabel/disk-main-nixos
@@ -95,3 +99,4 @@ sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+1 /dev/disk/by-partlab
 ```
 
 Enter the LUKS password used during installation, then reboot. You should no longer be prompted for a password.
+

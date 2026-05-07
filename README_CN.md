@@ -83,6 +83,10 @@ sudo reboot
 
 安装完成系统后，在终端执行：
 
+> **注意**
+>
+> 安全启动关闭时使用 0+1，安全启动开启时使用 0+7。
+
 ```bash
 # 绑定根分区（LUKS 容器 enc）
 sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+1 /dev/disk/by-partlabel/disk-main-nixos
