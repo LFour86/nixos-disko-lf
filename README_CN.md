@@ -31,7 +31,7 @@ sudo git clone https://github.com/LFour86/nixos-disko-lf.git
 
 然后，执行以下命令让 Disko **自动完成分区、LUKS2 加密、BTRFS 创建及挂载**（整个过程会提示输入两次 LUKS 密码）：
 
-**注意：** 请根据自己的需求来修改 `disko.nix`。
+**注意：** 请根据自己的需求来修改 `disko.nix`，下面这条命令可能要运行两次，因为第一次可能没有要求输入密码。
 
 ```bash
 sudo nix --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /etc/nixos/nixos-disko-lf/disko.nix
@@ -78,3 +78,18 @@ sudo reboot
 ```
 
 重启后，引导时只需输入**一次** LUKS 密码（主分区），swap 会自动跟随解锁。impermanence + rollback 服务将确保每次重启后 `/` 目录保持纯净状态。
+
+### 5. TPM2 自动解锁
+
+安装完成系统后，在终端执行：
+
+```bash
+# 绑定根分区（LUKS 容器 enc）
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+1 /dev/disk/by-partlabel/disk-main-nixos
+
+# 绑定交换分区（LUKS 容器 enc-swap）
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+1 /dev/disk/by-partlabel/disk-main-swap
+```
+
+输入安装时使用的 LUKS 密码后重启就可以看到，不需要再输入密码了。
+

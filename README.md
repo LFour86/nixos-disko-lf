@@ -34,7 +34,7 @@ sudo git clone https://github.com/LFour86/nixos-disko-lf.git
 
 Then run the following command to let Disko **automatically complete partitioning, LUKS2 encryption, BTRFS creation, and mounting** (you will be prompted to enter the LUKS password twice during the process):
 
-**Note:** Modify `disko.nix` according to your own needs.
+**Note:** Modify `disko.nix` according to your own needs. The following command may need to be run twice, because it may not prompt for a password the first time.
 
 ```bash
 sudo nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /etc/nixos/nixos-disko-lf/disko.nix
@@ -82,3 +82,16 @@ sudo reboot
 
 After rebooting, you only need to enter the LUKS password **once** (for the main partition) during boot; swap will automatically be unlocked as well. The impermanence + rollback service ensures that the `/` directory remains pristine after every restart.
 
+### 5. TPM2 Auto-Unlock
+
+After the system installation is complete, run the following in the terminal:
+
+```bash
+# Bind the root partition (LUKS container enc)
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+1 /dev/disk/by-partlabel/disk-main-nixos
+
+# Bind the swap partition (LUKS container enc-swap)
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0+1 /dev/disk/by-partlabel/disk-main-swap
+```
+
+Enter the LUKS password used during installation, then reboot. You should no longer be prompted for a password.

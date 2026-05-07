@@ -140,6 +140,13 @@
 
   # BTRFS ephemeral root
   boot.initrd.systemd.enable = true;
+
+  boot.initrd.availableKernelModules = [ "tpm" "tpm_tis" "tpm_crb" ];
+    
+  boot.initrd.systemd.extraBin = {
+    cryptsetup = "${pkgs.cryptsetup}/bin/cryptsetup";
+    tpm2_pcrread = "${pkgs.tpm2-tools}/bin/tpm2_pcrread";
+  };
   
   boot.initrd.systemd.extraBin.btrfs = "${pkgs.btrfs-progs}/bin/btrfs"; # Ensure btrfs tool is available in initrd  
   boot.initrd.systemd.services.rollback = {
@@ -178,6 +185,7 @@
   environment.systemPackages = with pkgs; [
     btrfs-progs 
     disko
+    firefox
     git
     neovim
     tpm2-tools
