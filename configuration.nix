@@ -89,17 +89,7 @@
   };
 
   # File system
-  fileSystems."/" = { options = [ "subvol=root" "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
-  fileSystems."/home" = { options = [ "subvol=home" "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
-  fileSystems."/persist" = {
-    options = [ "subvol=persist" "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ];
-    neededForBoot = true;
-  };
-  fileSystems."/var/lib/flatpak" = { options = [ "subvol=flatpak" "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
-  fileSystems."/nix" = { options = [ "subvol=nix" "compress=zstd:3" "noatime" "discard=async" "space_cache=v2" "ssd" "commit=120" ]; };
-
-  # swap
-  swapDevices = [ { device = "/dev/mapper/enc-swap"; } ];
+  fileSystems."/persist".neededForBoot = true;
 
   # impermanence
   environment.persistence."/persist" = {
@@ -112,17 +102,23 @@
       # If use SSH
       #"/etc/ssh"
 
+      "/var/lib/AccountsService"
       "/var/lib/bluetooth"
       "/var/lib/containerd"
       "/var/lib/containers"
+      "/var/lib/cups"
       "/var/lib/docker"
       "/var/lib/libvirt"
       "/var/lib/NetworkManager"
       "/var/lib/nixos"
       "/var/lib/systemd/backlight"
       "/var/lib/systemd/coredump"
+      "/var/lib/systemd/credential"
+      "/var/lib/systemd/credentials"
       "/var/lib/systemd/linger"
       "/var/lib/systemd/random-seed"
+      "/var/lib/tailscale"
+      "/var/lib/waydroid"
       "/var/log"
     ];
     files = [
