@@ -104,11 +104,7 @@
 
       "/var/lib/AccountsService"
       "/var/lib/bluetooth"
-      "/var/lib/containerd"
-      "/var/lib/containers"
       "/var/lib/cups"
-      "/var/lib/docker"
-      "/var/lib/libvirt"
       "/var/lib/NetworkManager"
       "/var/lib/nixos"
       "/var/lib/systemd/backlight"
@@ -118,7 +114,6 @@
       "/var/lib/systemd/linger"
       "/var/lib/systemd/random-seed"
       "/var/lib/tailscale"
-      "/var/lib/waydroid"
       "/var/log"
     ];
     files = [
