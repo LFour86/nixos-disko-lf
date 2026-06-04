@@ -11,7 +11,7 @@ This project has the following features/advantages:
 - Optimize BTRFS mount parameters.
 - Fully declarative installation flow; after successful installation, you can use Disko directly to maintain the disk configuration.
 
-**Warning**: The following operation will **completely erase** the target SSD. Back up all data beforehand. The disk is assumed to be `/dev/nvme0n1` (run `lsblk -f` and `blkid` first to confirm the device name).
+**Warning**: The following operation will **completely erase** the target SSD. Back up all data beforehand. The disk is assumed to be `/dev/nvme0n1` (run `lsblk -f` first to confirm the device name).
 
 ## Clean Installation
 
@@ -22,7 +22,7 @@ This project has the following features/advantages:
 nix-env -iA nixos.git nixos.neovim nixos.mkpasswd
 
 # Confirm the disk
-lsblk -f
+lsblk
 ```
 
 ### 2. Use the Disko Declarative Configuration
@@ -34,7 +34,7 @@ sudo git clone https://github.com/LFour86/nixos-disko-lf.git
 
 Then run the following command to let Disko **automatically complete partitioning, LUKS2 encryption, BTRFS creation, and mounting** (you will be prompted to enter the LUKS password twice during the process):
 
-**Note:** Modify `disko.nix` according to your own needs. The following command may need to be run twice, because it may not prompt for a password the first time.
+**Warning:** Modify `disko.nix` according to your own needs.
 
 ```bash
 sudo nix --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /etc/nixos/nixos-disko-lf/disko.nix
@@ -69,8 +69,9 @@ mkpasswd -m sha-512 | sudo tee /mnt/persist/passwords/lfour
 mkpasswd -m sha-512 | sudo tee /mnt/persist/passwords/root
 
 # Set strict permissions to ensure security
-sudo chmod 700 /mnt/persist/passwords
+# First set 600 permissions for files, then set 700 permissions for the directory
 sudo chmod 600 /mnt/persist/passwords/*
+sudo chmod 700 /mnt/persist/passwords
 ```
 
 ### 4. Complete the Installation

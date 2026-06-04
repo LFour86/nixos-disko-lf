@@ -8,7 +8,7 @@
 - BTRFS 挂载参数优化。
 - 安装流程完全声明式，安装成功后可直接使用 disko 维护磁盘配置。
 
-**警告**：以下操作会**完全擦除**目标 SSD，请提前备份所有数据。假设磁盘为 `/dev/nvme0n1`（请先运行 `lsblk -f` 和 `blkid` 确认设备名）。
+**警告**：以下操作会**完全擦除**目标 SSD，请提前备份所有数据。假设磁盘为 `/dev/nvme0n1`（请先运行 `lsblk` 确认设备名）。
 
 ## 纯净安装
 
@@ -19,7 +19,7 @@
 nix-env --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" -iA nixos.git nixos.neovim nixos.mkpasswd
 
 # 确认磁盘
-lsblk -f
+lsblk
 ```
 
 ### 2. 使用 Disko 声明式配置文件
@@ -31,7 +31,7 @@ sudo git clone https://github.com/LFour86/nixos-disko-lf.git
 
 然后，执行以下命令让 Disko **自动完成分区、LUKS2 加密、BTRFS 创建及挂载**（整个过程会提示输入两次 LUKS 密码）：
 
-**注意：** 请根据自己的需求来修改 `disko.nix`，下面这条命令可能要运行两次，因为第一次可能没有要求输入密码。
+**警告：** 请根据自己的需求来修改 `disko.nix`。
 
 ```bash
 sudo nix --option substituters "https://mirrors.ustc.edu.cn/nix-channels/store https://cache.nixos.org/" --extra-experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko /etc/nixos/nixos-disko-lf/disko.nix
@@ -66,8 +66,9 @@ mkpasswd -m sha-512 | sudo tee /mnt/persist/passwords/lfour
 mkpasswd -m sha-512 | sudo tee /mnt/persist/passwords/root
 
 # 设置严格权限，确保安全
-sudo chmod 700 /mnt/persist/passwords
+# 先为文件设置 600 权限，再为目录设置 700 权限
 sudo chmod 600 /mnt/persist/passwords/*
+sudo chmod 700 /mnt/persist/passwords
 ```
 
 ### 4. 完成安装
