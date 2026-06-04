@@ -12,7 +12,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.kernelPackages = pkgs.linuxPackages;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   nixpkgs.config.allowUnfree = true;
 
@@ -71,14 +71,12 @@
 
   #programs.dconf.enable = true;
   #services = {
-    # Gnome
-    #gnome.gnome-keyring.enable = true;
-    #desktopManager.gnome.enable = true;
+    # KDE
+    #desktopManager.plasma6.enable = true;
     #displayManager = {
-      #defaultSession = "gnome";
-      #gdm = {
+      #defaultSession = "plasma";
+      #plamsa-login-manager = {
         #enable = true;
-        #wayland = true;
       #};
     #};
   #};
@@ -182,5 +180,5 @@
     tpm2-tools
   ];
 
-  system.stateVersion = "25.11";
+  system.stateVersion = "26.05";
 }
