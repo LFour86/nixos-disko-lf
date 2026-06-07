@@ -71,13 +71,21 @@
 
   #programs.dconf.enable = true;
   #services = {
-    # KDE
-    #desktopManager.plasma6.enable = true;
+    #gnome.gnome-keyring.enable = true;
+    #desktopManager = {
+      # GNOME
+      gnome.enable = true;
+      # KDE
+      #plasma6.enable = true;
+    };
     #displayManager = {
-      #defaultSession = "plasma";
-      #plamsa-login-manager = {
-        #enable = true;
-      #};
+      #defaultSession = "gnome";
+
+      # GDM
+      #gdm.enable = true;
+
+      # PLM
+      #plamsa-login-manager.enable = true;;
     #};
   #};
 
