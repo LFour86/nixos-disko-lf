@@ -182,6 +182,7 @@
 
   environment.systemPackages = with pkgs; [
     btrfs-progs 
+    clash-verge-rev
     disko
     firefox
     git
