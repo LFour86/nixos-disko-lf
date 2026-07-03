@@ -75,6 +75,7 @@
     desktopManager = {
       # GNOME
       gnome.enable = true;
+
       # KDE
       #plasma6.enable = true;
     };
