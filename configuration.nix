@@ -69,25 +69,25 @@
     variant = "";
   };
 
-  #programs.dconf.enable = true;
-  #services = {
-    #gnome.gnome-keyring.enable = true;
-    #desktopManager = {
+  programs.dconf.enable = true;
+  services = {
+    gnome.gnome-keyring.enable = true;
+    desktopManager = {
       # GNOME
       gnome.enable = true;
       # KDE
       #plasma6.enable = true;
     };
-    #displayManager = {
-      #defaultSession = "gnome";
+    displayManager = {
+      defaultSession = "gnome";
 
       # GDM
-      #gdm.enable = true;
+      gdm.enable = true;
 
       # PLM
       #plamsa-login-manager.enable = true;;
-    #};
-  #};
+    };
+  };
 
   services.pipewire = {
     enable = true;
