@@ -183,11 +183,13 @@
 };
 
   environment.systemPackages = with pkgs; [
+    age
     btrfs-progs 
     clash-verge-rev
     disko
     firefox
     git
+    sops
     neovim
     tpm2-tools
   ];
