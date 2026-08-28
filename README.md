@@ -11,7 +11,7 @@ This project has the following features/advantages:
 - Optimize BTRFS mount parameters.
 - Fully declarative installation flow; after successful installation, you can use Disko directly to maintain the disk configuration.
 
-**Warning**: The following operation will **completely erase** the target SSD. Back up all data beforehand. The disk is assumed to be `/dev/nvme0n1` (run `lsblk -f` first to confirm the device name).
+**Warning**: The following operation will **completely erase** the target SSD. Back up all data beforehand. The disk is assumed to be `/dev/nvme1n1` (run `lsblk -f` first to confirm the device name).
 
 ## Clean Installation
 

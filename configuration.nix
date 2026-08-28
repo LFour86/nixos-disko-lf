@@ -23,6 +23,7 @@
   nix = {
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
+      
       substituters = [
         "https://mirror.tuna.tsinghua.edu.cn/nix-channels/store"
         "https://mirrors.ustc.edu.cn/nix-channels/store"
@@ -33,16 +34,24 @@
 
   users = {
     mutableUsers = false;
+    
     users = {
       root = {
         hashedPasswordFile = "/persist/passwords/root";
       };
+      
       lfour = {
         uid = 1000;
         isNormalUser = true;
         hashedPasswordFile = "/persist/passwords/lfour";
         description = "LFour";
-        extraGroups = [ "wheel" "networkmanager" "video" "audio" ];
+        
+        extraGroups = [ 
+          "wheel" 
+          "networkmanager" 
+          "video" 
+          "audio" 
+        ];
       };
     };
   };
@@ -79,6 +88,7 @@
       # KDE
       #plasma6.enable = true;
     };
+    
     displayManager = {
       defaultSession = "gnome";
 
@@ -98,16 +108,19 @@
   # File system
   fileSystems."/persist".neededForBoot = true;
 
-  # impermanence
+  # Impermanence
   environment.persistence."/persist" = {
     hideMounts = true;
+    
     directories = [
-      # suggested subdirectory breakdown
+      # Suggested subdirectory breakdown
       "/etc/NetworkManager/system-connections"
       "/etc/nixos"
       "/etc/waydroid-extra"
 
-      # If use SSH
+      # If use SSH: ONLY if host keys are persisted instead of sops-managed
+      # (default with ssh.nix = sops host key, so nothing here is needed;
+      #  "/etc/ssh" recursively persists all host keys — no extra file entries)
       #"/etc/ssh"
 
       "/var/lib/AccountsService"
@@ -122,15 +135,11 @@
       "/var/lib/systemd/credentials"
       "/var/lib/systemd/linger"
       "/var/lib/systemd/random-seed"
-      "/var/lib/tailscale"
       "/var/log"
     ];
+    
     files = [
       "/etc/machine-id"
-
-      # If use SSH
-      # "/etc/ssh/ssh_host_rsa_key"
-      # "/etc/ssh/ssh_host_ed25519_key"
     ];
   };
 
