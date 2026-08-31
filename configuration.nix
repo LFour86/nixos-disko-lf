@@ -134,6 +134,7 @@
       "/var/lib/systemd/credential"
       "/var/lib/systemd/credentials"
       "/var/lib/systemd/linger"
+      "/var/lib/tailscale"
       "/var/log"
     ];
     
